@@ -40,6 +40,12 @@
                 <div class="wrapper grey">
     	            <div class="container">
 					
+					    <!-- Flash message by BS, hidden by defaul. Dispalay that AI was engaged -->
+						<div class="flash-div">
+					        <div class="alert alert-danger alert-dismissible my-hidden"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a><strong>Info! </strong> AI was engaged.</div>
+						</div>
+						
+						<!-- Game field goes here by JS -->
                         <div id="game"></div>
              
     	            </div><!-- /.container -->			

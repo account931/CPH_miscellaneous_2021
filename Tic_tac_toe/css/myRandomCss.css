@@ -15,10 +15,44 @@ td {
 
 .tableX td:hover{background-color: yellow;}
 
+/*  ----------------Flashe message for AI  */
+.flash-div {height: 4em;}
+.my-hidden { display:none;}
+
+
+/*  ----------------Click asnimation  */
+.classnameAnim {
+  -webkit-animation-name: cssAnimation;
+  -webkit-animation-duration: 3s;
+  -webkit-animation-iteration-count: 1;
+  -webkit-animation-timing-function: ease;
+  -webkit-animation-fill-mode: forwards;
+}
+
+@-webkit-keyframes cssAnimation {
+  from {
+    -webkit-transform:  scale(0.1) skew(0deg) /* rotate(1777deg) translate(100px)*/;
+  }
+  to {
+    -webkit-transform:  scale(1) skew(0deg)   /* rotate(0deg) translate(100px*/);
+  }
+}
+/*  ----------------Click asnimation  */
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+/*  ----------------OLD CSS BELOW */
 
 /*  ----------------Mobile */
 
