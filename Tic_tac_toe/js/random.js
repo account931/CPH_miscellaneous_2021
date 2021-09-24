@@ -1,7 +1,8 @@
 $(document).ready(function(){
 	
 	let maxSize = 9;
-	let gameHits = new Array(maxSize);
+	let gameHits = new Array(maxSize); //array contains users hits, both user and bot, i.e [x, x, 0, x, x....]
+	let winCombination = [ [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6 ] ]; //win combinations: horiz, vertical, diagonal
 	
     //swal("OK", "Start game", "success");
 	
@@ -51,7 +52,7 @@ $(document).ready(function(){
     |
     |
     */
-    function drawGameField(speedFlag){ alert("draw " + gameHits);
+    function drawGameField(speedFlag){ //alert("draw " + gameHits);
 		var horizontal = 3;
 		var vertical   = 3;
 		var idIterator = 0;
@@ -98,7 +99,7 @@ $(document).ready(function(){
 		let delayTime = 100; //delay time 
 		
 		//AI goes fisrt before random number assignment (if conditions are met) ------------
-		/*
+		
 		//if first horizont line == [x, x, undefined]
 		if (gameHits[0] == "x" && gameHits[1] == "x" && gameHits[2] == undefined) {
 		    AI_engage_subfunction(2, "0");   //arrayIndex, cellValue(always "0")
@@ -117,10 +118,12 @@ $(document).ready(function(){
 			return true;
 		}
 		// End AI  -------------------------------------------------------------------------
-		*/
 		
 		
-		//generate random
+		
+		
+		
+		//generate random //Working!!!
 		/*
 		let numberRandom = getRandomInt(0, maxSize-1); //alert(numberRandom);
 		if(gameHits[numberRandom] != undefined){ //if hit number was already taken, do re-random again
@@ -132,12 +135,12 @@ $(document).ready(function(){
 		*/
 		
 		
-		//
+		//Random variant with do while
 		let numberRandom;
 		do {
 			numberRandom = getRandomInt(0, maxSize-1);
 		} while(
-			gameHits[numberRandom] != undefined	
+			gameHits[numberRandom] != undefined	//check if random number array elem has not been taken 
 		)
 		gameHits[numberRandom] = "0";
 		
@@ -149,12 +152,12 @@ $(document).ready(function(){
 		}, delayTime);
 
 		
-		checkGame(); 
-		/*
+		//checkGame(); 
+		
 		if(checkGame() == true){
 			return false; //to prevent computedAnswer fire if the winner is present
 		}
-		*/
+		
 		
 	}
 	
@@ -187,7 +190,7 @@ $(document).ready(function(){
 			
 	    //flash message
 	    $(".my-hidden"). show();
-	    $(".my-hidden"). fadeOut(3200);	
+	    $(".my-hidden"). fadeOut(3400);	
 			
 	    //computed answer with delay
 	    setTimeout(() => {
@@ -210,6 +213,7 @@ $(document).ready(function(){
     |
     */
 	function AnnounceWinner(winneText){
+		alert("Announce");
 		 swal({
 			html:true,
             title: winneText,
@@ -224,8 +228,9 @@ $(document).ready(function(){
         },
         function(isConfirm){
             if (isConfirm){
+				
 		        //swal("Winner", "X won", "success");
-			    gameHits = new Array(maxSize); //clear array
+			    gameHits = new Array(maxSize); //clear the array
 			    setTimeout(() => {
 			        drawGameField(true); //redraw new game field
 		        }, 1000);
@@ -248,71 +253,93 @@ $(document).ready(function(){
 	function drawRedLine(){
 		alert("draw line");
 		
-		/*
-		let tempArray =[];
-		for (var i = 0, l = gameHits.length; i < l; i++) {
-			let tempEl = gameHits[i];
-		}
-		*/
+        let result = getWinningArrayNumber(); //gets the index of winning combination sub-array of array winCombination, i.e return 2 
+		alert("result winCombination: " + result);
+		colorRow(winCombination[result][0], winCombination[result][1], winCombination[result][2]);	
+	
 		
-		alert(gameHits);
+		
+		
+		//alert(gameHits);
+		
+		//WOKING VARIANT, reassigned to getWinningArrayNumber() ---------------
+		/*
 		//if 1st horizont row row elems have the same/equal values (regadless if "x" or "0")
-		if(gameHits[0] == gameHits[1] && gameHits[0] == gameHits[3] ){
-		   colorRow(0, 1, 3);
+		if(gameHits[0] == gameHits[1] && gameHits[0] == gameHits[2] && gameHits[1] == gameHits[2] && gameHits[0] != undefined ){ //additional Fix, check if undefined, otherwise it could compare undefined cells and draw line in empty undefined cells
+		   alert("match 1");
+		   colorRow(0, 1, 2);
 		}
 		
 		//if 2nd horizont row elems have the same/equal values (regadless if "x" or "0")
-		if(gameHits[3] == gameHits[4] && gameHits[3] == gameHits[5] ){ alert("match");
+		if(gameHits[3] == gameHits[4] && gameHits[3] == gameHits[5] && gameHits[4] == gameHits[5] && gameHits[3] != undefined ){ alert("match");
 		   colorRow(3, 4, 5);
 		}
 		
 		//if 3rd horizont row elems have the same/equal values (regadless if "x" or "0")
-		if(gameHits[6] == gameHits[7] && gameHits[6] == gameHits[8] ){ alert("match2");
+		if(gameHits[6] == gameHits[7] && gameHits[6] == gameHits[8] && gameHits[7] == gameHits[8] && gameHits[6] != undefined ){ alert("match2");
 		   colorRow(6, 7, 8);
 		}
 		
 		//if 1st vertical row row elems have the same/equal values (regadless if "x" or "0")
-		if(gameHits[0] == gameHits[3] && gameHits[0] == gameHits[6] ){
+		if(gameHits[0] == gameHits[3] && gameHits[0] == gameHits[6] && gameHits[3] == gameHits[6] && gameHits[0] != undefined ){
 		   colorRow(0, 3, 6);
 		}
 		
 		//if 2nd vertical row row elems have the same/equal values (regadless if "x" or "0")
-		if(gameHits[1] == gameHits[4] && gameHits[1] == gameHits[7] ){
+		if(gameHits[1] == gameHits[4] && gameHits[1] == gameHits[7] && gameHits[4] == gameHits[7] && gameHits[1] != undefined){
 		   colorRow(1, 4, 7);
 		}
 		
 		
 		//if 3rd vertical row row elems have the same/equal values (regadless if "x" or "0")
-		if(gameHits[2] == gameHits[5] && gameHits[2] == gameHits[8] ){
+		if(gameHits[2] == gameHits[5] && gameHits[2] == gameHits[8] && gameHits[5] == gameHits[8] && gameHits[2] != undefined ){
 		   colorRow(2, 5, 8);
 		}
 		
 		//if 1st diagonal row row elems have the same/equal values (regadless if "x" or "0")
-		if(gameHits[0] == gameHits[4] && gameHits[0] == gameHits[8] ){
+		if(gameHits[0] == gameHits[4] && gameHits[0] == gameHits[8] && gameHits[0] == gameHits[8] && gameHits[0] != undefined ){
 		   colorRow(0, 4, 8);
 		}
 		
 		//if 2ndst diagonal row row elems have the same/equal values (regadless if "x" or "0")
-		if(gameHits[2] == gameHits[4] && gameHits[2] == gameHits[6] ){
+		if(gameHits[2] == gameHits[4] && gameHits[2] == gameHits[6] && gameHits[4] == gameHits[6] && gameHits[2] != undefined){
 		   colorRow(2, 4, 6);
 		}
-		
-		/*
-		(gameHits[0] == "x" && gameHits[1] == "x" && gameHits[2] == "x") || (gameHits[3] == "x" && gameHits[4] == "x" && gameHits[5] == "x") || (gameHits[6] == "x" && gameHits[7] == "x" && gameHits[8] == "x") 
-		//vertical check 
-		|| (gameHits[0] == "x" && gameHits[3] == "x" && gameHits[6] == "x") || (gameHits[1] == "x" && gameHits[4] == "x" && gameHits[7] == "x") || (gameHits[2] == "x" && gameHits[5] == "x" && gameHits[8] == "x")
-		//diagonal check
-		|| (gameHits[0] == "x" && gameHits[4] == "x" && gameHits[8] == "x") || (gameHits[2] == "x" && gameHits[4] == "x" && gameHits[6] == "x")
-	    ){
 		*/
+        //End WOKING VARIANT---------------
 		
 		
 		
 	}
 	
 	
+	
+	//subfunction, used in drawRedLine() and checkGame()
+	//gets the index of winning combination sub-array of array winCombination, i.e return 2 
+	function getWinningArrayNumber(){
+		
+		for(let i = 0; i < gameHits.length; i++){
+			for(let j = 0; j < winCombination.length; j++){
+				for(let n = 0; n < winCombination[j].length; n++){
+					let temp1 = winCombination[j][n];
+					let temp2 = winCombination[j][n+1];
+					let temp3 = winCombination[j][n+2];
+					if(gameHits[temp1] == gameHits[temp2] && gameHits[temp1] == gameHits[temp3] && gameHits[temp2] == gameHits[temp3] && gameHits[temp1] != undefined){
+					    //alert(j);
+						return j;
+					} 
+				}
+		    }
+	    }
+		
+    }
+	
+	
+	
+	
 	//subfunction, used in drawRedLine()
-	function colorRow(cell1, cell2, cell3){ alert('start draw');
+	function colorRow(cell1, cell2, cell3){ 
+	    alert('start draw winner line ' + cell1 + " " + cell2 + " " + cell3);
 		$("#"+ cell1).css("background-color", "red"); 
 		$("#"+ cell2).css("background-color", "red"); 
 		$("#"+ cell3).css("background-color", "red");
@@ -323,13 +350,63 @@ $(document).ready(function(){
 	
     /*
     |--------------------------------------------------------------------------
-    | Check winner 
+    | Check winner based on array gameHits[] and array winCombination[]
     |--------------------------------------------------------------------------
     |
     |
     */
 	function checkGame(){
 		
+		//variant 2, more short elegant variant ---------------
+		let winnerText;
+	    let result = getWinningArrayNumber(); //gets the index of winning combination sub-array of array winCombination, i.e return 2 
+        
+		if(result == null){  //no winning match was found
+		    alert("null, i.e no winning match so far");
+			
+			//check while no win match if it an even situation
+			
+		    //check if Players are even
+		    let checkFlag = false;
+		    for (var i = 0, l = gameHits.length; i < l; i++) {
+                if (typeof(gameHits[i]) =='undefined') { //checks if any array element is undefined, meaning the gane is not finished yet
+                    checkFlag = true;
+			        break;
+                } 
+            }; 
+		
+		    if(checkFlag == false ){ //true if finds no undefined element
+		        alert("even");
+			    AnnounceWinner("So close. You are even");
+                return true;	//stop		
+		    }
+			
+			return false;
+		}
+		
+		
+		
+		
+		//detect who wins "X" or "0"
+		let t = winCombination[result][0]; //gets value of just one first cell (or other 2 must be tha same value)
+		if(gameHits[t] == "x"){
+			alert("x won");
+			winnerText = "Winner is  <i> You </i> !!! You <i>  won </i>!!!!";
+		} else {
+			alert("o won");
+			winnerText = "Screw you. Bot screwed you. You are sucked .Winner is <i> Bot</i> !!! ";
+		}
+		drawRedLine(); //draw red line for winning cell combination
+        AnnounceWinner(winnerText);
+		return true;
+		// End variant 2, more short elegant variant ---------------
+		
+			
+
+
+
+		//Working version, reassined to more short elegant variant ----------------
+		/*
 		//check if main Player win "X"
 		if ( 
 		//horizontal check for "x" Player (Main Player)
@@ -339,9 +416,8 @@ $(document).ready(function(){
 		//diagonal check
 		|| (gameHits[0] == "x" && gameHits[4] == "x" && gameHits[8] == "x") || (gameHits[2] == "x" && gameHits[4] == "x" && gameHits[6] == "x")
 	    ){
-			
+			    drawRedLine(); //draw red line for winning cell combination
                 AnnounceWinner("Winner is  <i> You </i> !!! You <i>  won </i>!!!!");
-				drawRedLine();
 				return true;
            
 		} 
@@ -357,9 +433,8 @@ $(document).ready(function(){
 		     || (gameHits[0] == "0" && gameHits[4] == "0" && gameHits[8] == "0") || (gameHits[2] == "0" && gameHits[4] == "0" && gameHits[6] == "0")
 			){
 			    //alert("bot draw ");
-				
+				drawRedLine(); //draw red line for winning cell combination
                 AnnounceWinner("Screw you. Bot screwed you. You are sucked .Winner is <i> Bot</i> !!! ");
-				drawRedLine();
 				return true;	//stop			
 			
 		}
@@ -374,7 +449,7 @@ $(document).ready(function(){
 		//check if Players are even
 		let checkFlag = false;
 		for (var i = 0, l = gameHits.length; i < l; i++) {
-            if (typeof(gameHits[i]) =='undefined') {
+            if (typeof(gameHits[i]) =='undefined') { //checks if any array element is undefined, meaning the gane is not finished yet
                checkFlag = true;
 			   break;
             } 
@@ -387,6 +462,8 @@ $(document).ready(function(){
 		} 
 		
 		return false;
+		*/
+		// End Working version, reassined to more short elegant variant -----
 	}
 	
 	
