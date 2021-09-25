@@ -59,7 +59,7 @@ td {
 @media screen and (max-width: 460px) {   
  
     .header_p {
-	    font-size: 44px;	
+	    font-size: 1em;	
 	}
 	
 	.bt-mobile-mine {

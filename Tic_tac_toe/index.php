@@ -9,13 +9,23 @@
             <title>Tic tac toe JS</title>
   
             <!--Favicon-->
-            <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+            <link rel="shortcut icon" href="images/favicon_loho.ico" type="image/x-icon">
 
             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
             <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css"> <!-- Sweet Alert CSS -->
-            <script src='https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js'></script> <!--Sweet Alert JS-->   
+			
+			<!-- Sweet Alert_2 --> <!-- Must go first, before Sweet Alert_1 in order not to conflict (Sweet Alert_2 will work, but Sweet Alert_1 won't) --> 
+			<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+			
+			<!-- Sweet Alert_1 --> 
+	        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css"> <!-- Sweet Alert_1 CSS -->
+            <script src='https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js'></script>     <!--Sweet Alert_1 JS   -->  
+            
+
+			
+			<!-- Fa Font Awesome 5 -->
+			<script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
 
             <link rel="stylesheet" type="text/css" media="all" href="css/myRandomCss.css">
             <script src="js/random.js"></script><!--  Core Random JS-->
@@ -29,7 +39,11 @@
 
             <div id="headX" class="jumbotron text-center gradient" style =' background-color: ;'> <!--#2ba6cb;-->
                 <h1 id="h1Text"> <span id="textChange"> Tic tac toe JS</span>   </h1>
-                <p class="header_p">Tic tac toe JS <!--generates random lists, ramdomizes integers, etc--> <span class="glyphicon glyphicon-wrench"></span>
+                <p class="header_p">Sweet Alert 2, Awesome 5  <!--generates random lists, ramdomizes integers, etc--> 
+				    <span class="glyphicon glyphicon-qrcode"></span>
+					<i class='fas fa-cat' style='font-size:36px'></i>      <!-- Fa Font Awesome 5 --> 
+					<i class='fas fa-seedling' style='font-size:36px'></i> <!-- Fa Font Awesome 5 -->
+
                 </p>
 		        <p class="language"><a href="/eng">ENG</a></p>
 	        </div>

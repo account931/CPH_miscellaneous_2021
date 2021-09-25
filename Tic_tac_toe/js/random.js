@@ -9,7 +9,7 @@ $(document).ready(function(){
     drawGameField(true); //draw gane fields onLoad
     //$("#game").addClass( "classnameAnim" );
 	
-	
+
 	
 	
 	/*
@@ -147,10 +147,13 @@ $(document).ready(function(){
 		//
 		
 		//computed answer with delay
+		
 		setTimeout(() => {
 			drawGameField(false); //renew with no animation
 		}, delayTime);
-
+		
+		//drawGameField(false); //renew with no animation
+        
 		
 		//checkGame(); 
 		
@@ -191,6 +194,27 @@ $(document).ready(function(){
 	    //flash message
 	    $(".my-hidden"). show();
 	    $(".my-hidden"). fadeOut(3400);	
+		
+		//Sweet alert 2 Toast -----
+		const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+
+        Toast.fire({
+            icon: 'success',
+            title: 'AI was engaged!!!'
+        })
+	    //Sweet alert 2 Toast ----
+		
+
 			
 	    //computed answer with delay
 	    setTimeout(() => {
@@ -213,7 +237,7 @@ $(document).ready(function(){
     |
     */
 	function AnnounceWinner(winneText){
-		alert("Announce");
+		//alert("Announce");
 		 swal({
 			html:true,
             title: winneText,
@@ -224,16 +248,19 @@ $(document).ready(function(){
             confirmButtonText: 'Good, start new game!',
             cancelButtonText: "No, cancel it!",
             closeOnConfirm: true,
-            closeOnCancel: false
+            closeOnCancel: false,
+			background: "yellow",
+			imageSize: "50x50"
         },
         function(isConfirm){
             if (isConfirm){
+				
 				
 		        //swal("Winner", "X won", "success");
 			    gameHits = new Array(maxSize); //clear the array
 			    setTimeout(() => {
 			        drawGameField(true); //redraw new game field
-		        }, 1000);
+		        }, 1400);
 			
 			    //return true;
 				
@@ -251,11 +278,14 @@ $(document).ready(function(){
     |
     */
 	function drawRedLine(){
-		alert("draw line");
+		//alert("draw line");
 		
         let result = getWinningArrayNumber(); //gets the index of winning combination sub-array of array winCombination, i.e return 2 
-		alert("result winCombination: " + result);
-		colorRow(winCombination[result][0], winCombination[result][1], winCombination[result][2]);	
+		//alert("result winCombination: " + result);
+		
+		setTimeout(() => { //Mega Fix, otherwise without this delay, if Bot wins, it colorRow() first and then as specified in computedAnswer() redrasw game field with delay erasing colored cells
+			colorRow(winCombination[result][0], winCombination[result][1], winCombination[result][2]);	//Fix
+		}, 1200);
 	
 		
 		
@@ -339,7 +369,7 @@ $(document).ready(function(){
 	
 	//subfunction, used in drawRedLine()
 	function colorRow(cell1, cell2, cell3){ 
-	    alert('start draw winner line ' + cell1 + " " + cell2 + " " + cell3);
+	    //alert('start draw winner line ' + cell1 + " " + cell2 + " " + cell3);
 		$("#"+ cell1).css("background-color", "red"); 
 		$("#"+ cell2).css("background-color", "red"); 
 		$("#"+ cell3).css("background-color", "red");
@@ -362,7 +392,7 @@ $(document).ready(function(){
 	    let result = getWinningArrayNumber(); //gets the index of winning combination sub-array of array winCombination, i.e return 2 
         
 		if(result == null){  //no winning match was found
-		    alert("null, i.e no winning match so far");
+		    //alert("null, i.e no winning match so far");
 			
 			//check while no win match if it an even situation
 			
@@ -376,7 +406,7 @@ $(document).ready(function(){
             }; 
 		
 		    if(checkFlag == false ){ //true if finds no undefined element
-		        alert("even");
+		        //alert("even");
 			    AnnounceWinner("So close. You are even");
                 return true;	//stop		
 		    }
@@ -387,13 +417,13 @@ $(document).ready(function(){
 		
 		
 		
-		//detect who wins "X" or "0"
+		//Goes here only if winning combination is found. Detect who wins "X" or "0"
 		let t = winCombination[result][0]; //gets value of just one first cell (or other 2 must be tha same value)
 		if(gameHits[t] == "x"){
-			alert("x won");
+			//alert("X won");
 			winnerText = "Winner is  <i> You </i> !!! You <i>  won </i>!!!!";
 		} else {
-			alert("o won");
+			//alert("0 won");
 			winnerText = "Screw you. Bot screwed you. You are sucked .Winner is <i> Bot</i> !!! ";
 		}
 		drawRedLine(); //draw red line for winning cell combination
