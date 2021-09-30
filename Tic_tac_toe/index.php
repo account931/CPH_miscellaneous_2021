@@ -25,7 +25,9 @@
 
 			
 			<!-- Fa Font Awesome 5 -->
-			<script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+			<script src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" data-auto-a11y="true" ></script> <!-- Fix to avoid CORS blocking -->
+			<!--<script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>--> <!-- official CDN, but it works OK on Localhost, but on real host causes CORS blocking and show no img -->
+			
 
             <link rel="stylesheet" type="text/css" media="all" href="css/myRandomCss.css">
             <script src="js/random.js"></script><!--  Core Random JS-->

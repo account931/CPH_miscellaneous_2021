@@ -16,14 +16,18 @@ session_start();
         </head>
 		
         <body>
+		    
+
           
             <div id="headX" class="col-sm-12 col-xs-12"> <!--#2ba6cb;-->
 			    <h2> Minus function </h2>
                 <form action=""  method="get">
+				
 				    <?php
                     $rand = rand();
                     $_SESSION['rand'] = $rand;
                     ?>
+					
                     <label for="amount">Amount:</label><br>
                     <input type="number" id="amount" name="amount" value="0"   class="form-control"><br>
                     <label for="limiter">Limiter:</label><br>
@@ -45,11 +49,15 @@ session_start();
 			echo $_GET['randcheck'] . " " . $_SESSION['rand'];
 			
 			//if form is submitted
-            if(isset($_GET['submit']) /*&& $_GET['randcheck']==$_SESSION['rand'] */){
+            if(isset($_GET['submit']) && $_GET['amount'] != "" /*&& $_GET['randcheck']==$_SESSION['rand'] */){
+				echo "<p> Get is " . $_GET['amount'] . "</p>";
+				
 			    echo minusAction($_GET['amount'], $_GET['limiter']);
                 unset($_GET['submit']);	
+				unset($_GET['amount']);	
+				$_GET['amount'] = null;
+				echo "<p> Get is " . $_GET['amount'] . "</p>";
 				
-                				
 			}
 
 			
@@ -91,12 +99,15 @@ session_start();
             </div>
             <!-- End Result Div -->
 			
-	    <script>
+	
+        </body>
+		    <script>
+			//does not work
+			/*
 		    if ( window.history.replaceState ) {
                 window.history.replaceState( null, null, window.location.href );
-            }
+            } ^/
 		</script>
-        </body>
     </html>
 
 
