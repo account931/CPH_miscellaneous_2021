@@ -37,6 +37,7 @@
 import routerMenuX from './components/Menu/VueRouterMenu.vue';
 
 
+
 export default {
   name: 'App',
   //using other sub-component 
