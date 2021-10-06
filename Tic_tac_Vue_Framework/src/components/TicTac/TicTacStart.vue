@@ -1,13 +1,30 @@
 <template>
-    <div class="col-sm-12 col-xs-12">
+    <div class="col-sm-12 col-xs-12 game-div">
     
         <!-- Time counter, how many seconds left till start of new game (happens when someone wins and user clicked "Start a new game") -->
         <div class="timer"> {{ this.counterTime }}</div>
-        
+        <!-- End Time counter, how many seconds left till start of new game (happens when someone wins and user clicked "Start a new game") -->
+
+
+
+
+        <!--------- Draw the game Field from sub-component './sub_components/gameField.vue' ------------> 
+        <!-- Passing "vertical, horizontal, gameHits" as props to child sub-component --> 
+        <draw-game-field  :verticalX="this.vertical" 
+                          :gameHitsX="this.gameHits" 
+                          :ebHorizont="this.horizontal"  
+                          @myEventX="mainUserClick"/> <!-- pass this Parent's component method "mainUserClick" to child compon -->
+        <!--------- End Draw the game Field from sub-component './sub_components/gameField.vue' --------> 
     
+    
+    
+        <h3> Original (TicTacStart_1.vue) table </h3>
+        
+        
+        <!--------- Build game field REASSIGNED to sub-component <draw-game-field --------->
+        <!-- Build game field based on array gameHits[], iterate over array, substitute for drawGameField() -->
         <table class='tableX' id='gameTable'> 
         
-            <!-- Build game field based on array gameHits[], iterate over array, substitute for drawGameField() -->
         
             <!-- building horizontal -->
             <tr v-for="(item, index) in horizontal" :key="index">  
@@ -38,7 +55,7 @@
             <!-- iterate over array -->
         
        </table>
-       
+      
      
         
        
@@ -50,6 +67,12 @@
 
 
 <script>
+//import function from other external file
+import {computedAnswerFile} from './sub_functions/computedAnswer.js';  //name in {} i.e 'computedAnswerFile' must be cooherent to name in "export const computedAnswerFile" in '/sub_functions/computedAnswer.js'
+
+//using other sub-component, in this case a component to draw the game Field
+import drawGameField from './sub_components/gameField.vue';  //import file from same level folder
+	     
 //import Swal from 'sweetalert2'; //not working in Vue, have to use vue-sweetalert2
 //start vue-sweetalert2 ---------
 import Vue from 'vue'
@@ -61,17 +84,25 @@ Vue.use(VueSweetalert2);
 
 export default {
   name: 'TicTacStart_1',
+  
+  //using other sub-component 
+  components: {
+      'draw-game-field': drawGameField 
+  },
+  //props: ['horizontal2','vertical2'], //no need?
+  
   data () {
     return {
-      msg: 'Welcome to Your Vue.js App',
-      maxSize: 9, 
-      gameHits: new Array(9), //array contains users hits, both user and bot, i.e [x, x, 0, x, x....]
+      msg      : 'Welcome to Your Vue.js App',
+      maxSize  : 9, 
+      gameHits : new Array(9), //array contains users hits, both user and bot, i.e [x, x, 0, x, x....]
       winCombination: [ [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6 ] ], //win combinations: horiz, vertical, diagonal
       
-      horizontal: 3, //value to build game field (table)
-      vertical: 3,
-	  idIterator: 0,
-      counterTime: '',
+      horizontal : 3, //value to build game field (table)
+      vertical   : 3,
+	  idIterator : 0,
+      counterTime: '', //used to counting sec till new game will start
+      userCanPlay: true, // flag if it is user's turn to play, to prevent user's multiple clicking without his turn
       
     }
   },
@@ -93,14 +124,20 @@ export default {
             |
             |
             */
-            mainUserClick(item) {
+            mainUserClick(item) { 
             
+                //if it is not user's turn to play, stop it
+                if(!this.userCanPlay){
+                   return false;
+                }
                 
                 //alert(this.gameHits.length);
                 
                 //this.gameHits[item] = "x"; //add to main array //VUE ALERT: this approach is NOT reactive
                 this.gameHits.splice(item, 1, "x"); //2 Mega Fixes: 1.to ensure reactivity should use this approach to change array, not this.gameHits[item] = "x"  2. Use splice this way => this.gameHits.splice(item, 1, "x"); //(what array el index to start with, delete 1, new value)
 
+                this.userCanPlay = false; //user can not play unless a bot makes a turn, changed to true in computedAnswer 
+                
                 console.log(this.gameHits);
                 
                 
@@ -108,7 +145,9 @@ export default {
 			       return false; //to prevent computedAnswer fire if the winner is present
 		        } 
                 
-		        this.computedAnswer(); 
+		        //this.computedAnswer(); //reassigned to external file, see next line 
+                computedAnswerFile.computedAnswer(this); //Call the function from external file (/sub_functions/computedAnswer.js). Must pass this or it will crash (e.g it needs this to use this.gameHits, etc)
+
             },
             
             
@@ -282,6 +321,7 @@ export default {
 		            if(checkFlag == false ){ //true if finds no undefined element
 		                //alert("even");
 			            this.AnnounceWinner("So close. You are even");
+                        this.userCanPlay = true; //enable user's turn to play
                         return true;	//stop		
 		            }
 			
@@ -296,6 +336,7 @@ export default {
 		        if(this.gameHits[t] == "x"){
 			        //alert("X won");
 			        winnerText = "Winner is  <i> You </i> !!! You <i>  won </i>!!!!";
+                    this.userCanPlay = true; //enable user's turn to play
 		        } else {
 			        //alert("0 won");
 			        winnerText = "Screw you. Bot won. Winner is <i> Bot</i> !!! ";
@@ -321,19 +362,21 @@ export default {
             |
             |
             */
-            computedAnswer() {
+            //has gone/reassigned to /sub_functions/computedAnswer.js
+            /*computedAnswer() {
                 
-                let delayTime = 100; //delay time
+                let delayTime = 300; //delay time
                 
                 //AI goes fisrt before random number assignment (if conditions are met) ------------
                 //(only several combinations are programmed, feel free to add more)
                 
+                //Section when Bot tries to prevent the user to win by using counter-measures (prevent user from completing full "x" combination)
                 //if first horizont line == [x, x, undefined]
 		        if (this.gameHits[0] == "x" && this.gameHits[1] == "x" && this.gameHits[2] == undefined) {
 		            this.AI_engage_subfunction(2, "0");   //arrayIndex, cellValue(always "0")
 			        return true;
 		        }
-		
+		        alert(88);
 		        //if first horizont line == [undefined, x, x]
 		        if (this.gameHits[1] == "x" && this.gameHits[2] == "x" && this.gameHits[0] == undefined) {
 		            this.AI_engage_subfunction(0, "0");  //arrayIndex, cellValue(always "0")
@@ -343,6 +386,13 @@ export default {
 		        //if 2nd horizont line == [x, x, undefined]
 		        if (this.gameHits[3] == "x" && this.gameHits[4] == "x" && this.gameHits[5] == undefined) {
 		           this.AI_engage_subfunction(5, "0");  //arrayIndex, cellValue(always "0") 
+			       return true;
+		        }
+                
+                //Section when Bot tries to win by completing full "0" combination
+                //if 1st horizont line == [0, 0, undefined]
+		        if (this.gameHits[0] == "0" && this.gameHits[1] == "0" && this.gameHits[2] == undefined) {
+		           this.AI_engage_subfunction(2, "0");  //arrayIndex, cellValue(always "0") 
 			       return true;
 		        }
                 //End AI goes fisrt before random number assignment (if conditions are met) ------------
@@ -366,15 +416,20 @@ export default {
                     //Insert "0" to gameHits[] 
 		            //gameHits[numberRandom] = "0";
                     this.gameHits.splice(numberRandom, 1, "0"); //2 Mega Fixes: 1.to ensure reactivity should use this approach to change array, not this.gameHits[item] = "x"  2. Use splice this way => this.gameHits.splice(item, 1, "x"); //(what array el index to start with, delete 1, new value)
+                    
+                    this.userCanPlay = true; //enable user's turn to play
+                    
+                    if(this.checkGame() == true){
+			           return false; //to prevent computedAnswer fire if the winner is present
+		            }
                                     
                 }, delayTime);                
                 
-                
-		        if(this.checkGame() == true){
-			        return false; //to prevent computedAnswer fire if the winner is present
-		        }
-
-            },
+            }, */
+            
+            
+            
+            
             
             
             
@@ -398,9 +453,11 @@ export default {
 		
 		    let delayTime = 100; //delay time 
 		
+            //write down the bot answer '0'
 		    //this.gameHits[arrayIndex] = cellValue; //gameHits[2] = "0";	adds to specified array index (array gameHits) new value
 	        this.gameHits.splice(arrayIndex, 1, cellValue); //2 Mega Fixes: 1.to ensure reactivity should use this approach to change array, not this.gameHits[item] = "x"  2. Use splice this way => this.gameHits.splice(item, 1, "x"); //(what array el index to start with, delete 1, new value)
-
+            
+            this.userCanPlay = true; //enable user's turn to play
 			
 	        //flash message
 	        //$(".my-hidden"). show();
@@ -489,6 +546,6 @@ td {
 .redCell {background-color: red;} /* for winning line */
 
 .timer{height:1.5em; color:red; font-size: 1.4em;}
-
+.game-div{margin-bottom: 10em;}
 
 </style>

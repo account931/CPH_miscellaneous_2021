@@ -33,7 +33,7 @@
 </template>
 
 <script>
-//import vue-router-menu
+//import vue-router-menu as subcomponent
 import routerMenuX from './components/Menu/VueRouterMenu.vue';
 
 
