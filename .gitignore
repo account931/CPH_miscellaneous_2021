@@ -1,4 +1,6 @@
 /Tic_tac_Vue_Framework/node_modules
+/Tic_tac_Vue_Framework+VUEX/node_modules
+
 /public/hot
 /public/storage
 /storage/*.key

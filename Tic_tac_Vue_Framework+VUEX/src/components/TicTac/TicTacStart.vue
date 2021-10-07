@@ -2,18 +2,18 @@
     <div class="col-sm-12 col-xs-12 game-div">
     
         <!-- Time counter, how many seconds left till start of new game (happens when someone wins and user clicked "Start a new game") -->
-        <div class="timer"> {{ this.counterTime }}</div>
+        <div class="timer"> {{ this.$store.state.counterTime }}</div>
         <!-- End Time counter, how many seconds left till start of new game (happens when someone wins and user clicked "Start a new game") -->
 
-
+        
 
 
         <!--------- Draw the game Field from sub-component './sub_components/gameField.vue' ------------> 
         <!-- Passing "vertical, horizontal, gameHits" as props to child sub-component --> 
-        <draw-game-field  :verticalX  ="this.vertical"
-                          :horizontalX="this.horizontal"        
-                          :gameHitsX  ="this.gameHits" 
-                          @myEventX="mainUserClick"/> <!-- pass this Parent's component method "mainUserClick" to child compon -->
+        <draw-game-field  :verticalX  = "this.$store.state.vertical" 
+                          :horizontalX= "this.$store.state.horizontal"        
+                          :gameHitsX  = "this.$store.state.gameHits" 
+                          @myEventX = "mainUserClick"/> <!-- pass this Parent's component method "mainUserClick" to child compon -->
         <!--------- End Draw the game Field from sub-component './sub_components/gameField.vue' --------> 
     
     
@@ -91,7 +91,9 @@ export default {
   
   data () {
     return {
-      msg      : 'Welcome to Your Vue.js App',
+      msg      : 'Welcome to Tic tac on Vue Vuex',
+	  //has gone to Vuex store
+	  /*
       maxSize  : 9, 
       gameHits : new Array(9), //array contains users hits, both user and bot, i.e [x, x, 0, x, x....]
       winCombination: [ [0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6 ] ], //win combinations: horiz, vertical, diagonal
@@ -101,7 +103,7 @@ export default {
 	  idIterator : 0,
       counterTime: '', //used to counting sec till new game will start
       userCanPlay: true, // flag if it is user's turn to play, to prevent user's multiple clicking without his turn
-      
+      */
     }
   },
   
@@ -125,18 +127,26 @@ export default {
             mainUserClick(item) { 
             
                 //if it is not user's turn to play, stop it
-                if(!this.userCanPlay){
+                if(!this.$store.state.userCanPlay){
                    return false;
                 }
                 
-                //alert(this.gameHits.length);
-                
-                //this.gameHits[item] = "x"; //add to main array //VUE ALERT: this approach is NOT reactive
-                this.gameHits.splice(item, 1, "x"); //2 Mega Fixes: 1.to ensure reactivity should use this approach to change array, not this.gameHits[item] = "x"  2. Use splice this way => this.gameHits.splice(item, 1, "x"); //(what array el index to start with, delete 1, new value)
+				
+                //below next line was reassigned to Vuex (+2 lines below)
+                //this.gameHits.splice(item, 1, "x"); //2 Mega Fixes: 1.to ensure reactivity should use this approach to change array, not this.gameHits[item] = "x"  2. Use splice this way => this.gameHits.splice(item, 1, "x"); //(what array el index to start with, delete 1, new value)
 
-                this.userCanPlay = false; //user can not play unless a bot makes a turn, changed to true in computedAnswer 
+                //trigger Vuex mutation to update Vuex array gameHits[]
+                this.$store.dispatch('updateVuexGameHitsX', item); //working example how to change Vuex store from child component  
+
+
+                //below line was reassigned to Vuex (+2 lines below)
+                //this.userCanPlay = false; //user can not play unless a bot makes a turn, changed to true in computedAnswer 
                 
-                console.log(this.gameHits);
+				//trigger Vuex mutation to update Vuex boolean userCanPlay
+                this.$store.dispatch('updateUserCanPlay', false); //working example how to change Vuex store from child component  
+
+
+                console.log(this.$store.state.gameHits);
                 
                 
                 if(this.checkGame() == true){
@@ -184,7 +194,17 @@ export default {
                         
 			            //reset the game field, i.e start new game
 			            setTimeout(() => {
-                            this.gameHits = new Array(this.maxSize); //clear the array
+						    
+							
+							
+                            //below next line was reassigned to Vuex (+2 lines below)
+                            //this.gameHits = new Array(this.maxSize); //clear the array //new Array(this.maxSize);
+
+                            //trigger Vuex mutation to update Vuex array gameHits[]
+                            this.$store.dispatch('resetVuexGameHits'); //working example how to change Vuex store from child component  
+
+
+
                             this.clearRedCells();
 			                //drawGameField(true); //redraw new game field
 		                }, timeDelay); 
@@ -201,23 +221,43 @@ export default {
     
             //subfunction, used in AnnounceWinner(), counts second till new game start (happens when someone won & user clicked "Start new game")
             timeLeftToStartLeft(timeX){
-                this.counterTime = timeX;
                 
+				//below next line was reassigned to Vuex (+2 lines below)
+				//this.counterTime = timeX;
+
+				//trigger Vuex mutation to set Vuex var counterTime
+                this.$store.dispatch('setVuexCounterTime', timeX);
+					
                 //counts time-- with setInterval 
                 let timerId = setInterval(() => {
-                    this.counterTime = this.counterTime - 5;
+				
+					
+					//below next line was reassigned to Vuex (+2 lines below)
+                    //this.counterTime = this.counterTime - 5;
+					
+                    //trigger Vuex mutation to update Vuex var counterTime
+                    this.$store.dispatch('updateVuexCounterTime', 5); //working example how to change Vuex store from child component  
+			
+			
                     
                     //stop counting if goes < 0
-                    if(this.counterTime <= 0){
-                       clearInterval(timerId);
-                       this.counterTime = ''; //get time vanish 
+                    if(this.$store.state.counterTime <= 0){
+                        clearInterval(timerId);
+					   
+
+                        //below next line was reassigned to Vuex (+2 lines below)
+					    //this.counterTime = ''; //get time vanish
+
+				        //trigger Vuex mutation to set Vuex var counterTime
+                        this.$store.dispatch('setVuexCounterTime', '');
+				
                     }
 		        }, 1);
                 
                 // stop setInterval anyway in timeX arg (in case prev counting did not reach 0). Working
                 /* setTimeout(() => { 
                     clearInterval(timerId);
-                    this.counterTime = ''; //get time vanish                    
+                    this.$store.state.counterTime = ''; //get time vanish                    
                  }, timeX);   */              
                 
             },
@@ -227,13 +267,13 @@ export default {
 	        //gets the index of winning combination sub-array of array winCombination, i.e return 2 
             getWinningArrayNumber(){
 		
-		        for(let i = 0; i < this.gameHits.length; i++){
-			        for(let j = 0; j < this.winCombination.length; j++){
-				        for(let n = 0; n < this.winCombination[j].length; n++){
-					        let temp1 = this.winCombination[j][n];
-					        let temp2 = this.winCombination[j][n+1];
-					        let temp3 = this.winCombination[j][n+2];
-					        if(this.gameHits[temp1] == this.gameHits[temp2] && this.gameHits[temp1] == this.gameHits[temp3] && this.gameHits[temp2] == this.gameHits[temp3] && this.gameHits[temp1] != undefined){
+		        for(let i = 0; i < this.$store.state.gameHits.length; i++){           //this.gameHits.length;
+			        for(let j = 0; j < this.$store.state.winCombination.length; j++){ //this.winCombination.length
+				        for(let n = 0; n < this.$store.state.winCombination[j].length; n++){
+					        let temp1 = this.$store.state.winCombination[j][n];
+					        let temp2 = this.$store.state.winCombination[j][n+1];
+					        let temp3 = this.$store.state.winCombination[j][n+2];
+					        if(this.$store.state.gameHits[temp1] == this.$store.state.gameHits[temp2] && this.$store.state.gameHits[temp1] == this.$store.state.gameHits[temp3] && this.$store.state.gameHits[temp2] == this.$store.state.gameHits[temp3] && this.$store.state.gameHits[temp1] != undefined){
 					            //alert(j);
 						        return j;
 					        } 
@@ -264,7 +304,7 @@ export default {
 		        }, 1200);
                 */
                 
-                this.colorRow(this.winCombination[result][0], this.winCombination[result][1], this.winCombination[result][2]);	//Fix
+                this.colorRow(this.$store.state.winCombination[result][0], this.$store.state.winCombination[result][1], this.$store.state.winCombination[result][2]);	//Fix
 
             },
             
@@ -311,33 +351,49 @@ export default {
 			
 		            //check if Players are even
 		            let checkFlag = false;
-		            for (var i = 0, l = this.gameHits.length; i < l; i++) {
-                        if (typeof(this.gameHits[i]) =='undefined') { //checks if any array element is undefined, meaning the gane is not finished yet
+		            for (var i = 0, l = this.$store.state.gameHits.length; i < l; i++) { //this.gameHits.length
+                        if (typeof(this.$store.state.gameHits[i]) =='undefined') { //checks if any array element is undefined, meaning the gane is not finished yet
                             checkFlag = true;
 			                break;
                         } 
                     }; 
-		
+		            
 		            if(checkFlag == false ){ //true if finds no undefined element
 		                //alert("even");
 			            this.AnnounceWinner("So close. You are even");
-                        this.userCanPlay = true; //enable user's turn to play
+						
+						//below line was reassigned to Vuex (+2 lines below)
+                        //this.userCanPlay = true; //enable user's turn to play
+						
+						//trigger Vuex mutation to update Vuex boolean userCanPlay
+                        this.$store.dispatch('updateUserCanPlay', true); //working example how to change Vuex store from child component  
+
                         return true;	//stop		
 		            }
-			
+			        
 			        return false;
 		        }
 		
 		
 		
-		
 		        //Goes here only if winning combination is found. Detect who wins "X" or "0"
-		        let t = this.winCombination[result][0]; //gets value of just one first cell (or other 2 must be tha same value)
-		        if(this.gameHits[t] == "x"){
+		        let t = this.$store.state.winCombination[result][0]; //gets value of just one first cell (or other 2 must be tha same value)
+		        if(this.$store.state.gameHits[t] == "x"){
 			        //alert("X won");
 			        winnerText = "Winner is  <i> You </i> !!! You <i>  won </i>!!!!";
-                    this.userCanPlay = true; //enable user's turn to play
+					
+					
+                //below line was reassigned to Vuex (+2 lines below)
+                //this.userCanPlay = true; //enable user's turn to play   
+				
+				//trigger Vuex mutation to update Vuex boolean userCanPlay
+                this.$store.dispatch('updateUserCanPlay', true); //working example how to change Vuex store from child component  
+
+
+
+                    
 		        } else {
+				
 			        //alert("0 won");
 			        winnerText = "Screw you. Bot won. Winner is <i> Bot</i> !!! ";
 		        }
@@ -455,9 +511,29 @@ export default {
 		
             //write down the bot answer '0'
 		    //this.gameHits[arrayIndex] = cellValue; //gameHits[2] = "0";	adds to specified array index (array gameHits) new value
-	        this.gameHits.splice(arrayIndex, 1, cellValue); //2 Mega Fixes: 1.to ensure reactivity should use this approach to change array, not this.gameHits[item] = "x"  2. Use splice this way => this.gameHits.splice(item, 1, "x"); //(what array el index to start with, delete 1, new value)
+	        
+			
             
-            this.userCanPlay = true; //enable user's turn to play
+			
+			
+			 
+            //below next line was reassigned to Vuex (+2 lines below)
+            //this.gameHits.splice(arrayIndex, 1, cellValue); //2 Mega Fixes: 1.to ensure reactivity should use this approach to change array, not this.gameHits[item] = "x"  2. Use splice this way => this.gameHits.splice(item, 1, "x"); //(what array el index to start with, delete 1, new value)
+
+            //trigger Vuex mutation to update Vuex array gameHits[]
+            this.$store.dispatch('updateVuexGameHits0', arrayIndex); //working example how to change Vuex store from child component  
+			
+
+			  
+			//below line was reassigned to Vuex (+2 lines below)
+            //this.userCanPlay = true; //enable user's turn to play
+	
+			//trigger Vuex mutation to update Vuex boolean userCanPlay
+            this.$store.dispatch('updateUserCanPlay', true); //working example how to change Vuex store from child component  
+
+
+
+
 			
 	        //flash message
 	        //$(".my-hidden"). show();
@@ -485,10 +561,21 @@ export default {
             
             
 		
-            this.counterTime = "Attention, AI was engaged!!!!";
+			//below next line was reassigned to Vuex (+2 lines below)
+            //this.counterTime = "Attention, AI was engaged!!!!"; //
+
+		    //trigger Vuex mutation to set Vuex var counterTime
+            this.$store.dispatch('setVuexCounterTime', "Attention, AI was engaged!!!!");
+			
+			
 			setTimeout(() => {
-			    this.counterTime = ""; //force the text to disappear
-		    }, 400);
+				
+			    //below next line was reassigned to Vuex (+2 lines below)
+                //this.counterTime = ""; //force the text to disappear
+
+		        //trigger Vuex mutation to set Vuex var counterTime
+                this.$store.dispatch('setVuexCounterTime', "");
+		    }, 600);
             
             
 	        //computed answer with delay

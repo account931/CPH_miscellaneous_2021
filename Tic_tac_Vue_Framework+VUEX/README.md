@@ -1,15 +1,14 @@
-# tic-tac-Vue Framework
-- <p> Tic-tac-tac on Vue Framework 2.5. </p>
-- <p> Same as JQuery Tic-tac-toe but implemented on Vue Framework 2.5. +  </p>
-- <p> + uses Vue router + </p>
-- <p> + this Vue project uses Vue-sweetalert2 (ordinary sweetAlert works Ok on {npm run dev}, but does not work in build (i.e in /dist folder)), while JQ Tic-tac-toe uses both Sweet Alert 2 and Sweet Alert 1 </p>
+# tic-tac-Vue Framework + Vuex Store
+- <p> Tic-tac-tac on Vue Framework 2.5. + Vuex Store </p>
+- <p> Same as Tic_tac_Vue_Framework but Vuex Store was added </p>
+- <p> Features inherited from Tic_tac_Vue_Framework: Vue router +  Vue-sweetalert2 </p>
 
 - <p> Vue-sweetalerts difference from ordinary SweetAlert => </p>
      - <p> instead of Swal.fire({})                  => use => this.$swal  (or sometimes Vue.swal) </p>
      - <p> instead of let Toast = Swal.mixin({})     => use => let Toast = this.$swal.mixin({      </p>
      
 
-# How it works 
+# How it works (copy from Tic_tac_Vue_Framework Readme)
 - <p> Built based on JQuery variant but transfered to Vue Framework. </p>
 - <p> Main game component is 'src/component/TicTac/TicTacStart.vue'. It uses function computedAnswer(), outlined to external separate js file '/sub_functions/computedAnswer.js'. 
       While outlining had to modify the function by adding arg (this) => computedAnswerFile.computedAnswer(this); Otherwise, {this} is unavailable in subfunction 
