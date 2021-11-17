@@ -11,7 +11,7 @@ function getMaxDeletions($s) {
 	$allowedCharacter = false; //for checking if arg contains allowed characters only 
 	$tempArray        = array();
 	$clonePieces      = array(); //will contain temp array, copy of $pieces  
-	$countDeletion     = 0;
+	$countDeletion     = 0; //can be used as return function value (alternative variant). See Line 47 for amendments
 	$pairPosition;
 	
 	
@@ -44,7 +44,7 @@ function getMaxDeletions($s) {
 	//main/core functionality, calc the unnecessary movements
 	
 	//foreach($pieces as $oneItem){
-	for($j = 0; $j < count($pieces); $j++){
+	for($j = 0; $j < count($pieces); $j++){  //use here {$clonePieces} not {$pieces} to use {$countDeletion} as a return value (alternative variant)
 		
 		
 		for($i = 0; $i < count($counterPairs); $i++){
@@ -68,12 +68,16 @@ function getMaxDeletions($s) {
 			    $findPair = $counterPairs[$i][$pairPosition]; //find the value of counter pair (counterPartner), e.g if a current arg item, e.g "U", $findPair will be "D"  
 				
 				if(in_array($findPair, $clonePieces)){ //if  "D" in $clonePieces (clone of $pieces), i.e array contains both "U" and "D" which is unnecessary movement
+					
 					$deleteOne = array_search($pieces[$j],  $clonePieces ); //find position of "U" (current arg item) in $clonePieces (to delete it in next step)
 					$deleteTwo = array_search($findPair, $clonePieces );    //find position of "D" in $clonePieces (to delete it in next step) 
+					
 					array_splice($clonePieces , $deleteOne, 1); //delete it "U" from $clonePieces
-					$countDeletion++; //not used??
+					$countDeletion++; //not used?? => can be used as return function value (alternative variant), in this case in Line 47 use not {$pieces} but  for($j = 0; $j < count($clonePieces ); $j++){ 
+					
 					array_splice($clonePieces , $deleteTwo, 1); //delete it "D" from $clonePieces
-					$countDeletion++; //not used??
+					$countDeletion++; //not used?? => can be used as return function value (alternative variant), in this case in Line 47 use not {$pieces} but  for($j = 0; $j < count($clonePieces );
+					
 					++$j; //skip current iteration or it will procuded incorrect result
 				}
 			} 
@@ -85,11 +89,19 @@ function getMaxDeletions($s) {
 	
 	}
 	$result = count($pieces) - count($clonePieces); //initial arg array $pieces ["U", "R", "D"] minus $clonePieces [ "R"] (where u have deleted all unnecessary movement )
+	//return $countDeletion; //can use $countDeletion as a return function value (alternative variant), just in this case in Line 47 use not {$pieces} but  for($j = 0; $j < count($clonePieces ); 
 	return $result;
+	
 	
 }
 
 //fun the function itself
-$result = getMaxDeletions("RRRL");
-echo $result; //2
+$result = getMaxDeletions("RUDRL");
+
+echo $result; 
+//Test values
+//"RRRL"  must return 2  
+//"URDL"  must return 2 
+//"RUDRL" must return 4 
+//"RRR"   must return 0
 ?>
