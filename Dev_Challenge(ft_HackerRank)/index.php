@@ -7,6 +7,7 @@ const DEFAULT_ROLES = array('R', 'L', 'U', 'D' ); //allowed chars
 
 
 function getMaxDeletions($s) {
+	
 	$counterPairs     = array(array('R', 'L' ), array('U', 'D' ) ); //for comparison
 	$allowedCharacter = false; //for checking if arg contains allowed characters only 
 	$tempArray        = array();
@@ -17,7 +18,8 @@ function getMaxDeletions($s) {
 	
 	//Check if arg $s is a string
 	if(!is_string($s)){
-		return "Argument must be string";
+		throw new Exception("Argument must be string");
+		//return "Argument must be string";
 	} 
 	
 	
@@ -34,7 +36,8 @@ function getMaxDeletions($s) {
 		}
 	}
 	if($allowedCharacter == false){
-		return "Not allowed character";
+		throw new Exception("Not allowed character");
+		//return "Not allowed character";
 	} 
 	//End Check if arg string $s contains only allowed character fom const DEFAULT_ROLES
 
@@ -95,8 +98,13 @@ function getMaxDeletions($s) {
 	
 }
 
-//fun the function itself
-$result = getMaxDeletions("RUDRL");
+//run the function itself in a try catch
+try {
+  $result = getMaxDeletions("RUDRLJ");
+} catch(Exception $e) {
+  echo 'Message: getMaxDeletions fucntion was stopped due to error => <b> ' .$e->getMessage() . '</b>';
+}
+
 
 echo $result; 
 //Test values
