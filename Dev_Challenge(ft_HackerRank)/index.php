@@ -100,16 +100,18 @@ function getMaxDeletions($s) {
 
 //run the function itself in a try catch
 try {
-  $result = getMaxDeletions("RUDRLJ");
+  $result = getMaxDeletions("RUDRL");
 } catch(Exception $e) {
   echo 'Message: getMaxDeletions fucntion was stopped due to error => <b> ' .$e->getMessage() . '</b>';
 }
 
 
-echo $result; 
+echo "Function returns " . $result; 
 //Test values
-//"RRRL"  must return 2  
-//"URDL"  must return 2 
-//"RUDRL" must return 4 
-//"RRR"   must return 0
+//"RRRL"   must return 2  
+//"URDL"   must return 2 
+//"RUDRL"  must return 4 
+//"RRR"    must return 0
+//"RUDRLJ" must return exception "Not allowed character"
+// 88      must return exception "Argument must be string"
 ?>
