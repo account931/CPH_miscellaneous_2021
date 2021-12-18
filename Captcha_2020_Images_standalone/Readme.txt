@@ -1,0 +1,2 @@
+# Just a partial/incomplete test code of Captcha 2022 with Images carved from "Laravel-Yii2_Comment_Vote_widgets" to test on hosting. 
+# Full and complete source code is in "Laravel-Yii2_Comment_Vote_widgets" 
