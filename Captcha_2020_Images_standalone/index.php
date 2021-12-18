@@ -76,10 +76,14 @@ include 'Classes/Captcha/Img_Captcha_2022.php';//uses autoload instead of manual
 	 
 
         <div id="headX" class="jumbotron text-center gradient head-style" style =''> <!--#2ba6cb;-->
-            <h1 id="h1Text"> <span id="textChange"> Captch images</span>   </h1>
-            <p class="header_p">Captcha images <i class="fa fa-gift" style="font-size:36px"></i></p> 
-            <!--<p class="language"><a href="../">Ru</a></p>-->
+            <h1 id="h1Text"> <span id="textChange"> Captcha images</span>   </h1>
+            <p class="header_p"> 
+			    Partial/incomplete test code of Captcha 2022 with Images carved from "Laravel-Yii2_Comment_Vote_widgets" to test on hosting. 
+			    Full and complete source code is in "Laravel-Yii2_Comment_Vote_widgets"
+			    <i class="fa fa-gift" style="font-size:36px"></i></p> 
+                <!--<p class="language"><a href="../">Ru</a></p>-->
 	    </div>
+
 
 
 

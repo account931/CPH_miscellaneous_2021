@@ -19,12 +19,14 @@
 .watermark{position: absolute; top: 40px; left: 40px; display:none; z-index:2; border: 1px solid black; border-radius:25px; padding:0.1em;}  /* Check icon to appear on click */
 
 
-
+.header_p{padding-left:1em; padding-right:1em; font-size: 0.7em;}
 
  /* Mobile */
  @media screen and (max-width: 480px) { 
-  
+      .captcha-img  { padding: 0.3em;}
+	  .watermark{position: absolute; top: 0.1em; left: 0.1em; display:none; z-index:2; border: 1px solid black; border-radius:25px; padding:0.1em;}  /* Check icon to appear on click */
  }
+ 
 
  
  
