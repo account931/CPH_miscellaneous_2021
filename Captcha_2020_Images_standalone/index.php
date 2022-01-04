@@ -1,6 +1,6 @@
 <?php 
-
-include 'Classes/Captcha/Img_Captcha_2022.php';//uses autoload instead of manual includin each class-> Error if it is included in 2 files=only1 is accepted 
+session_start();
+include 'Classes/Captcha/Img_Captcha_2022.php';//
 ?>
 
 <!doctype html>
@@ -40,7 +40,7 @@ include 'Classes/Captcha/Img_Captcha_2022.php';//uses autoload instead of manual
 	 
 	 
         <?php
-		    use Classes\Captcha\Img_Captcha_2022;
+		    use Classes\Captcha\Img_Captcha_2022; //namespace is must-have, otherwise class not found
 			$model = new Img_Captcha_2022();
 			
 			$readImg = $model->readSubfoldersDirs('images/Captcha_2022'); //returns array("Cats"  => array("cat1.jpg", "cat2.jpeg", "cat3.jpg"), "Cars"  => array("car1.jpg", "car2.jpeg", "car3.jpg"));
@@ -65,7 +65,7 @@ include 'Classes/Captcha/Img_Captcha_2022.php';//uses autoload instead of manual
 		    $correctCaptchaImages = $model->getCorrectImagesSelection($allImages, $randomNine, $checkCategory); 
 		    //dd($correctCaptchaImages);
 		    //NOT PASSING IT IN VIEW, SAVE TO SESSION .......................
-		
+		    $_SESSION["correctCaptchaSet"] = json_encode($correctCaptchaImages);
 		
 		    //Gets the length of check category, i.e how many relevant pictures user has to select to pass the captcha..........
 		    $checkCategoryLength = count($correctCaptchaImages);
@@ -75,14 +75,63 @@ include 'Classes/Captcha/Img_Captcha_2022.php';//uses autoload instead of manual
 	 
 	 
 
-        <div id="headX" class="jumbotron text-center gradient head-style" style =''> <!--#2ba6cb;-->
+        <div id="headX" class="jumbotron text-center gradient head-style" style ='background:orange;'> <!--#2ba6cb;-->
             <h1 id="h1Text"> <span id="textChange"> Captcha images</span>   </h1>
             <p class="header_p"> 
-			    Partial/incomplete test code of Captcha 2022 with Images carved from "Laravel-Yii2_Comment_Vote_widgets" to test on hosting. 
-			    Full and complete source code is in "Laravel-Yii2_Comment_Vote_widgets"
+			    Partial/incomplete test code of Captcha carved from "L****-Y**_Comment_Vote_widgets". 
+			    
 			    <i class="fa fa-gift" style="font-size:36px"></i></p> 
                 <!--<p class="language"><a href="../">Ru</a></p>-->
-	    </div>
+		</div>		
+				
+		
+
+
+
+		<!---------- Modal window ------------------->
+		<div class="col-sm-12 col-xs-12">
+		        
+		    <!-- Button to Open the Modal -->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" style="margin-left:11%;">
+                    See a hint
+            </button>
+
+            <!-- The Modal -->
+            <div class="modal fade" id="myModal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+
+                        <!-- Modal Header -->
+                        <div class="modal-header">
+                            <h4 class="modal-title">Hint is here</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="modal-body">
+                            <img src="images/captcha_disclaimer.png"  class="img-responsive my-cph" alt="a"/>
+                        </div>
+
+                        <!-- Modal footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+				
+		</div>	
+        <!---------- End Modal window --------------->		
+				
+
+				
+				
+	   
+
+
+
+
 
 
 
@@ -97,7 +146,7 @@ include 'Classes/Captcha/Img_Captcha_2022.php';//uses autoload instead of manual
 						    <div class="col-sm-8 col-xs-12">
 							
 							    <div class="captcha-header">
-						            <h3> Select all images containing <b> <?= $checkCategory ?> </b>.</h3>
+						            <h3> Select all images containing <b><span style="-webkit-text-stroke: 1.2px black; font-size:1.3em;"> <?= $checkCategory ?> </span></b></h3>
 							        <p> Hint: there are <b> <?=$checkCategoryLength ?> </b> of them. </b> </p>
 								</div>
 								
@@ -120,9 +169,26 @@ include 'Classes/Captcha/Img_Captcha_2022.php';//uses autoload instead of manual
 								}// @endforeach
 								?>
 						       
+
+								
 							</div>
 						</div>
 					<!-- End Build captcha based on 9 random images -->
+			 
+			 
+			 
+			 
+			        <!-- Form -->
+					<div class="col-sm-12 col-xs-12">
+					    <hr>
+						<form class="form-horizontal" method="post" action="pages/check_captcha.php" enctype="multipart/form-data">
+						    <input type="hidden"  name="hidden-captcha-array" id="captcha-array"/>          <!-- captcha JSON array, attached via JS, see /js/img_captcha_2022.js -->
+						    <button type="submit" id="submBtn" class="btn btn-large btn-primary"> Submit captcha</button>
+						</form>
+					</div>	
+					<!-- End  Form -->
+			 
+			 
 			 
 			 
 

@@ -2,7 +2,7 @@
 
 .container {color:red;}
 
-.captcha-img     {border: 1px solid black; cursor:pointer;}
+.captcha-img     {border: 1px solid black; cursor:pointer; padding: 0.3em;}
 .captcha-img img {width:98%;}
 .captcha-img:hover {background:yellow; border: 1px solid red;}
 
@@ -20,6 +20,8 @@
 
 
 .header_p{padding-left:1em; padding-right:1em; font-size: 0.7em;}
+
+.footer {background:lavender; padding: 1em;}
 
  /* Mobile */
  @media screen and (max-width: 480px) { 
