@@ -1,0 +1,43 @@
+ /*---------------------------  */
+
+/*-- each slot css, i.e 10.45 --- */
+.slot{
+	padding: 0.4em; border: 1px solid black; border-radius:10px;  margin-left:1em; margin-bottom:0.7em;
+	cursor:pointer; 
+	/* animate smoothly */
+	transition: 1.25s;
+   -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s;
+}
+
+.not-selected:hover {background:yellow; border: 1px solid red;}
+
+/* CSS for clicked slot*/
+.selected{ background:lime;}
+.not-selected{ }
+
+/* button "Book it", button hidden and visible depends if user selected the slot */
+.button-mine {display:none;}
+
+.height-x{height:4em;} /* fixed height for div with button "Book it", button hidden and visible depends if user selected the slot, otherwise when visible makes the div thrinks */
+
+/* CSS for taken slot (in DB)*/
+.taken-slot{background:red;}
+
+.time-p {padding:1em; width: 50%; border:1px solid black;}
+
+.shadowX {
+	box-shadow: 
+	    0 1px 4px rgba(0, 0, 0, .3),
+        -23px 0 20px -23px rgba(0, 0, 0, .6),
+        23px 0 20px -23px rgba(0, 0, 0, .6),
+        inset 0 0 40px rgba(0, 0, 0, .1);
+}
+
+ /* Mobile */
+ @media screen and (max-width: 480px) { 
+ }
+ 
+
+ 
+ 
