@@ -43,22 +43,30 @@ include 'Classes/My_Booking/BookingProcess.php';//
 		    use Classes\My_Booking\BookingProcess; //namespace is must-have, otherwise class not found
 			$model       = new BookingProcess();
 			$todayIs     = $model->getCurrentDay();                   //gets today date, i.e "27-03-2022"
-			$sqlResult   = $model->getSQLDataForDate(/*$todayIs*/);   //gets emulated SQL quiery result, type: array of objects
-			$schedule    = $model->createSchedule($sqlResult);        //build Schedule
+			
+			//if isset $_GET['date-picker'], happens when user clicked "Change date"
+			if(isset($_GET['date-picker']) && $_GET['date-picker'] != null  ){
+			    $r = explode("-",$_GET['date-picker']); //$_GET['date-picker']) string comes reversed, i.e 2022-04-07, return it to "27-03-2022"
+                $todayIs = $r[2] . "-" . $r[1]. "-" . $r[0];				
+			}
+			
+			//$urlGetDate  = (isset($_GET['date-picker']) && $_GET['date-picker'] != null  ) ? $_GET['date-picker'] : $todayIs ;
+			$sqlResult   = $model->getSQLDataForDate($todayIs);   //gets emulated SQL quiery result, type: array of objects
+			$schedule    = $model->createSchedule($sqlResult);        //build Schedule with time slots
 			
 		?>
 	 
 	 
-
+        <!------ Header -------->
         <div id="headX" class="jumbotron text-center gradient head-style" style ='background:blue;'> <!--#2ba6cb;-->
             <h1 id="h1Text"> <span id="textChange"> Booking 2022</span>   </h1>
             <p class="header_p"> 
 			    Quick booking variant, no real DB is engaged, just emulated SQL DB query results </br>
-			    <?= "today is " . $todayIs; ?>
+			    <?= "today is " . $model->getCurrentDay(); ?>
 			    <i class="fa fa-gift" style="font-size:36px"></i></p> 
                 <!--<p class="language"><a href="../">Ru</a></p>-->
 		</div>		
-				
+		<!------ END Header -------->		
 		
 
 
@@ -66,13 +74,6 @@ include 'Classes/My_Booking/BookingProcess.php';//
 		<!---------- Modal window ------------------->
 		<div class="col-sm-12 col-xs-12">
 		    
-            <div class="col-sm-12 col-xs-12 height-x">			
-		    <!-- Button to Open the Modal -->
-            <button type="button" class="btn btn-primary button-mine" data-toggle="modal" data-target="#myModal" style="margin-left:11%;">
-                    Book it
-            </button>
-            </div>
-			
             <!-- The Modal -->
             <div class="modal fade" id="myModal">
                 <div class="modal-dialog">
@@ -87,12 +88,13 @@ include 'Classes/My_Booking/BookingProcess.php';//
                         <!-- Modal body -->
                         <div class="modal-body">
                             <p> You selected time:  </p>
+							<p> <?=$todayIs; ?> </p>
 							<p id="selected-time" class="shadowX time-p"> </p>
 							
 							<!-- Form -->
 					        <div class="col-sm-12 col-xs-12">
 					            <hr>
-						        <form class="form-horizontal" method="post" action="pages/check_captcha.php" enctype="multipart/form-data">
+						        <form class="form-horizontal" method="post" action="#" enctype="multipart/form-data">
 								
 						            <input type="hidden"  name="selected-time-slot" id="selectedTimeSlot"/>   <!-- val() via jQ -->
 								    
@@ -112,7 +114,7 @@ include 'Classes/My_Booking/BookingProcess.php';//
 									
 									
                                     <div class="col-md-6">
-						                <button type="submit" id="submBtn" class="btn btn-large btn-primary"> Confirm</button>
+						                <button type="submit" onclick="alert('N/A');return false;" id="submBtn" class="btn btn-large btn-primary"> Confirm(N/A)</button>
 									</div>
 									
 						        </form>
@@ -150,24 +152,42 @@ include 'Classes/My_Booking/BookingProcess.php';//
     	        <div class="container">
                     <hr>
              
-			        <!-- Build schedule here  -->
+			        <!-- Build schedule list with time slots here  -->
 						<div class="col-sm-12 col-xs-12">
 						    <div class="col-sm-8 col-xs-12">
-							
-							   
-                            <?php
-							//echo '<pre>';
-							//var_dump($sqlResult);
-                            //echo '</pre>';	
-
-                            echo $schedule;	
+							    <h3> Slots for <?= $todayIs ?> </h3>
+								
+								
+								<!-- DatePicker form, to change the date -->
+								<form class="form-horizontal" method="get" action="" enctype="multipart/form-data">
+								    <input type="date"  name="date-picker" id="datePicker" lang="en-US" />
+									<button type="submit" id="changeDateBtn" class="btn btn-danger" data-dismiss="modal">Change date</button>
+									<a href=" <?= parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH)?>"> Reset date </a> <!-- return base url without get -->
+								</form>
+								<!-- End DatePicker form, to change the date  -->
+								
+								
+								<!-- Button to Open the Modal -->
+								<div class="col-sm-12 col-xs-12 height-x">			
+                                    <button type="button" class="btn btn-primary button-mine" data-toggle="modal" data-target="#myModal" style="margin-left:1%;">
+                                        Book it
+                                    </button>
+                                 </div>
+								 <!-- Button to Open the Modal -->
+			
+                                <?php
+							    //echo '<pre>';
+							    //var_dump($sqlResult);
+                                //echo '</pre>';	
+                                
+                                echo $schedule;	//time slots grid list
                           
 							
 							?>
 								
 							</div>
 						</div>
-					<!-- End Build schedule here -->
+					<!-- End Build schedule list with time slots here -->
 			 
 			 
 

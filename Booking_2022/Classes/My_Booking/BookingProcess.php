@@ -6,13 +6,14 @@ namespace Classes\My_Booking;
 class BookingProcess 
 {
 	public $todayIs;  //assigning here will crash, use in constructor only, public $todayIs= self::getCurrentDay(); 
-	public $sqlData = array();
+	public $sqlData = array(); //to hold emulated sql query results. Type: Array of objects
 	
    
 	
-	//$oVal = (object)[];
+	
 	function __construct(){
-		$this->todayIs = self::getCurrentDay(); 
+		
+		$this->todayIs = self::getCurrentDay(); //e.g "27-03-2022"
 		
 		 //emulated sql query results, as we don't work here with real SQL, Type: Array of objects
 	    $this->sqlData = array(
@@ -39,16 +40,18 @@ class BookingProcess
 	
 
 	/**
-    * Function to return emulated SQL quiery result 
+    * Function to return emulated SQL query result 
 	* @param string $day
     * @return Type: Array of objects $this->sqlData
     */
 	public function getSQLDataForDate($day=''){
         if ($day=="") { 
-		    $day = date("Y-m-d"); 
+		    $day = date("Y-m-d"); //if arg is not provided, take today
 		}
 		
-		//$this->sqlData = (object)$this->sqlData; //converts array to object
+		//in real app, when working with DB, make here SQL query to get data based on ->where('db_column_name', $day)..........
+		//..........................
+		
 		return $this->sqlData;
 	}
 	
@@ -94,6 +97,15 @@ class BookingProcess
 			$schedule.= "</div>";
 		}
 		return $schedule;
+	}
+	
+	/**
+    * Function to to save new booking 
+	* @param 
+    * @return 
+    */
+	public function saveNewBooking(){
+		//check here if booking with the same time slot and date exist, if TRUE, return false
 	}
 	
 }
