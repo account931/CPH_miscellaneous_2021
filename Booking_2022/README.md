@@ -7,4 +7,4 @@
 
 ## Time slots
 
-![Screenshot](public/images/Screenshots/1.png)
+![Screenshot](images/Screenshots/1.png)
