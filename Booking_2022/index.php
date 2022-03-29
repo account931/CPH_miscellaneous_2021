@@ -1,6 +1,32 @@
 <?php 
-session_start();
 include 'Classes/My_Booking/BookingProcess.php';//
+
+//Core functionality here
+use Classes\My_Booking\BookingProcess; //namespace is must-have, otherwise class not found
+$model       = new BookingProcess();
+			
+//Decide if to use today date or date from $_GET (if set)
+//if isset $_GET['date-picker'], happens when user clicked "Change date"
+if(isset($_GET['date-picker']) && $_GET['date-picker'] != null  ){
+	$r       = explode("-",$_GET['date-picker']); //$_GET['date-picker']) string comes reversed, i.e 2022-04-07, return it to "27-03-2022"
+    $todayIs = $r[2] . "-" . $r[1]. "-" . $r[0];				
+} else {
+	$todayIs = $model->getCurrentDay();  //gets today date, i.e "27-03-2022" dd-mm-yy
+}
+			
+//check if date is not valid (user can change $_GET in URL manually )
+$d =explode("-", $todayIs);
+if (!checkdate($d[1], $d[0], $d[2] )){ //checkdate format must be mm-dd-yy (3 arg), e,g checkdate(3, 27, 2022)
+	header("Location: pages/date_not_valid_page.php");
+	//throw new Exception("Invalid date");
+}
+//check if date is not valid (user can change $_GET in URL manually )
+
+//Gets SQL result and build Time slots List			
+$sqlResult   = $model->getSQLDataForDate($todayIs);       //gets emulated SQL quiery result, type: array of objects
+$schedule    = $model->createSchedule($sqlResult);        //build Schedule with time slots
+			
+		
 ?>
 
 <!doctype html>
@@ -39,22 +65,7 @@ include 'Classes/My_Booking/BookingProcess.php';//
 	 
 	 
 	 
-        <?php
-		    use Classes\My_Booking\BookingProcess; //namespace is must-have, otherwise class not found
-			$model       = new BookingProcess();
-			$todayIs     = $model->getCurrentDay();                   //gets today date, i.e "27-03-2022"
-			
-			//if isset $_GET['date-picker'], happens when user clicked "Change date"
-			if(isset($_GET['date-picker']) && $_GET['date-picker'] != null  ){
-			    $r = explode("-",$_GET['date-picker']); //$_GET['date-picker']) string comes reversed, i.e 2022-04-07, return it to "27-03-2022"
-                $todayIs = $r[2] . "-" . $r[1]. "-" . $r[0];				
-			}
-			
-			//$urlGetDate  = (isset($_GET['date-picker']) && $_GET['date-picker'] != null  ) ? $_GET['date-picker'] : $todayIs ;
-			$sqlResult   = $model->getSQLDataForDate($todayIs);   //gets emulated SQL quiery result, type: array of objects
-			$schedule    = $model->createSchedule($sqlResult);        //build Schedule with time slots
-			
-		?>
+     
 	 
 	 
         <!------ Header -------->
@@ -162,7 +173,7 @@ include 'Classes/My_Booking/BookingProcess.php';//
 								<form class="form-horizontal" method="get" action="" enctype="multipart/form-data">
 								    <input type="date"  name="date-picker" id="datePicker" lang="en-US" />
 									<button type="submit" id="changeDateBtn" class="btn btn-danger" data-dismiss="modal">Change date</button>
-									<a href=" <?= parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH)?>"> Reset date </a> <!-- return base url without get -->
+									<a href=" <?= parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH)?>"> <button class="btn">Reset date to today</button> </a> <!-- return base url without get -->
 								</form>
 								<!-- End DatePicker form, to change the date  -->
 								

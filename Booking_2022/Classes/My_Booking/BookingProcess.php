@@ -106,6 +106,8 @@ class BookingProcess
     */
 	public function saveNewBooking(){
 		//check here if booking with the same time slot and date exist, if TRUE, return false
+		//check if date valid
+		//check if date is not Saturday, Sunday
 	}
 	
 }

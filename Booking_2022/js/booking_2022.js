@@ -2,17 +2,19 @@
 
 $(document).ready(function(){
 	
-	//sets the input type="date" to today or GET in URL (if isset)
-	var results = window.location.href.split("?")[1]; //gets "date-picker=2022-04-07" if get is set
-	if(results != undefined){
+	//set the datepicker input type="date" to today date or to $_GET in URL (if isset)
+	var results = window.location.href.split("?")[1]; //gets "date-picker=2022-04-07" if $_GET is set
+	if(results != undefined){ //if $_GET is set
 		//sets form datepicker input to $_GET value
 		let t = results.split("=")[1]; //gets "2022-04-07"
 		document.getElementById('datePicker').value = t; //u can set <input type="date"/> you need to bring the date in "YYYY-MM-DD" 
-	} else {
+	} else { //if $_GET is NOT set, use today date
   
 	    //sets form datepicker input to today, no $_GET value
 	    document.getElementById('datePicker').valueAsDate = new Date();
 	}
+	//end set the datepicker input type="date" to today date or to $_GET in URL (if isset)
+	
 	
 	/*
     |--------------------------------------------------------------------------
@@ -63,7 +65,7 @@ $(document).ready(function(){
 	
 	/*
     |--------------------------------------------------------------------------
-    | If user click to change date of displaying slot list
+    | If user click to change date of  slot list display
     |--------------------------------------------------------------------------
     |
     |
@@ -75,6 +77,7 @@ $(document).ready(function(){
 	    let changedDate = $('#datePicker').val();  //gets input value, e,g 2022-03-25
 		//$('#datePicker').val(changedDate.split("-")[2] + "-" +changedDate.split("-")[1] + "-" +changedDate.split("-")[0]);  //change 2022-03-25 to 25-03-2022
 		
+		
 		//check if selected value is not past
 		let selected  = new Date(changedDate);             //returns Sat Mar 26 2022 20:38:22 GMT+0100 (Центральная Европа, стандартное время)
 		let yesterday = new Date(Date.now() - 86400000); // that is: 24 * 60 * 60 * 1000 //returns Sat Mar 26 2022 20:38:22 GMT+0100 (Центральная Европа, стандартное время)
@@ -82,11 +85,17 @@ $(document).ready(function(){
 		//alert(yesterday.getTime()); //1648323461323
 		if(selected.getTime() <= yesterday.getTime()){  // yesterday.getTime() returns 1648323461323
 		    swal({html:true, title:'Stopped!', text:'<b>Cannot </br> select yesterday', type: 'error'});
-			return false;
+			return false; //changeDate form won't be submitted
 		}
 		//if all OK, form is submitted, with URL /?date-picker=2022-03-27
 		//end check if selected value is not past
 		
+		
+		//check 
+		if(selected.getDay() == 6 || selected.getDay() == 0) {
+			swal({html:true, title:'Stopped!', text:'<b> Can not select weekends, slect other day  </br>', type: 'error'});
+			return false; //changeDate form won't be submitted
+		}
 		
 	});
 	
